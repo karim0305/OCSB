@@ -14,8 +14,10 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const auth_module_module_1 = require("./user/auth/auth-module.module");
 const user_module_1 = require("./user/user.module");
-const measurement_module_1 = require("./measurement/measurement.module");
-const suitbooking_module_1 = require("./suitbooking/suitbooking.module");
+const product_module_1 = require("./product/product.module");
+const cart_module_1 = require("./cart/cart.module");
+const wishlist_module_1 = require("./wishlist/wishlist.module");
+const order_module_1 = require("./order/order.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -55,8 +57,10 @@ exports.AppModule = AppModule = __decorate([
             }),
             auth_module_module_1.AuthModule,
             user_module_1.UserModule,
-            measurement_module_1.MeasurementModule,
-            suitbooking_module_1.SuitbookingModule,
+            product_module_1.ProductModule,
+            cart_module_1.CartModule,
+            wishlist_module_1.WishlistModule,
+            order_module_1.OrderModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

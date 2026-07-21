@@ -5,8 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './user/auth/auth-module.module';
 import { UserModule } from './user/user.module';
-import { MeasurementModule } from './measurement/measurement.module';
-import { SuitbookingModule } from './suitbooking/suitbooking.module';
+import { ProductModule } from './product/product.module';
+import { CartModule } from './cart/cart.module';
+import { WishlistModule } from './wishlist/wishlist.module';
+import { OrderModule } from './order/order.module';
 
 
 @Module({
@@ -46,8 +48,10 @@ import { SuitbookingModule } from './suitbooking/suitbooking.module';
     }),
     AuthModule,
     UserModule,
-    MeasurementModule,
-    SuitbookingModule,
+    ProductModule,
+    CartModule,
+    WishlistModule,
+    OrderModule,
 
   ],
   controllers: [AppController],
