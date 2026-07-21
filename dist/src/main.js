@@ -19,21 +19,21 @@ async function bootstrap() {
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
     });
-    app.setGlobalPrefix(configService.get('API_PREFIX') ?? 'tmaapi');
+    app.setGlobalPrefix(configService.get('API_PREFIX') ?? 'ocsapi');
     const swaggerConfig = new swagger_1.DocumentBuilder()
-        .setTitle('TMA  API')
-        .setDescription('API documentation for TMA system')
+        .setTitle('OCS  API')
+        .setDescription('API documentation for OCS system')
         .setVersion('1.0')
         .addBearerAuth()
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, swaggerConfig);
-    swagger_1.SwaggerModule.setup('tmadoc', app, document, {
+    swagger_1.SwaggerModule.setup('ocsdoc', app, document, {
         swaggerOptions: { persistAuthorization: true },
     });
     const port = Number(process.env.PORT) || 3010;
     await app.listen(port);
     console.log(`🚀 Server running on port ${port}`);
-    console.log(`📑 Swagger docs available at /tmadoc`);
+    console.log(`📑 Swagger docs available at /ocsdoc`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
