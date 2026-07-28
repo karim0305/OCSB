@@ -1,7 +1,7 @@
 import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -129,6 +129,18 @@ export class CartService {
       success: true,
 
       message: 'Cart deleted successfully',
+    };
+  }
+
+  async findByUserId(userId: string) {
+    const cart = await this.cartModel
+      .findOne({ userId })
+      .populate('items.productId');
+
+    return {
+      success: true,
+      message: cart ? 'Cart fetched successfully' : 'No cart found',
+      data: cart, // null agar cart exist nahi karta
     };
   }
 }
