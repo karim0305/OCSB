@@ -75,6 +75,13 @@ export class Order {
   })
   totalAmount!:number;
 
+  @Prop({
+  type: String,
+  enum: ['cod', 'card', 'easypaisa', 'jazzcash', 'bank_transfer'],
+  default: 'cod',
+})
+amountType!: string;
+
 
 
   @Prop({

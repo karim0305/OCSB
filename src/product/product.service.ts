@@ -18,13 +18,20 @@ export class ProductService {
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    const existingProduct = await this.productModel.findOne({
-      productName: createProductDto.productName.trim(),
-    });
+ const existingProduct = await this.productModel.findOne({
+  $or: [
+    { productName: createProductDto.productName.trim() },
+    { productCode: createProductDto.productCode.trim() },
+  ],
+});
 
-    if (existingProduct) {
-      throw new ConflictException('Product name already exists.');
-    }
+if (existingProduct) {
+  if (existingProduct.productName === createProductDto.productName.trim()) {
+    throw new ConflictException('Product name already exists.');
+  }
+
+  throw new ConflictException('Product code already exists.');
+}
 
     const product = await this.productModel.create(createProductDto);
 
@@ -62,16 +69,16 @@ export class ProductService {
   }
 
   async update(id: string, dto: UpdateProductDto) {
-    if (dto.productName) {
-      const existingProduct = await this.productModel.findOne({
-        productName: dto.productName.trim(),
-        _id: { $ne: id },
-      });
+   if (dto.productCode) {
+  const existingProductCode = await this.productModel.findOne({
+    productCode: dto.productCode.trim(),
+    _id: { $ne: id },
+  });
 
-      if (existingProduct) {
-        throw new ConflictException('Product name already exists.');
-      }
-    }
+  if (existingProductCode) {
+    throw new ConflictException('Product code already exists.');
+  }
+}
 
     const product = await this.productModel.findByIdAndUpdate(id, dto, {
       new: true,

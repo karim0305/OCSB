@@ -2,10 +2,16 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
+
+export enum ProductStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
 
 export class CreateProductDto {
   @ApiProperty({
@@ -13,6 +19,14 @@ export class CreateProductDto {
   })
   @IsString()
   productName!: string;
+
+
+@ApiProperty({
+  example: 'PRD-1001',
+})
+@IsString()
+productCode!: string;
+
 
   @ApiProperty({
     example: 'Wolfgang',
@@ -60,6 +74,15 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   colors!: string[];
+
+
+  
+@ApiProperty({
+  enum: ProductStatus,
+  example: ProductStatus.ACTIVE,
+})
+@IsEnum(ProductStatus)
+status!: ProductStatus;
 
   @ApiProperty({
     type: [String],

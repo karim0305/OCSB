@@ -49,6 +49,21 @@ export declare class CartController {
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
+    findByUserId(userId: string): Promise<{
+        success: boolean;
+        message: string;
+        data: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schema/cart.schema").Cart, {}, {}> & import("./schema/cart.schema").Cart & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        }, {}, {}> & import("mongoose").Document<unknown, {}, import("./schema/cart.schema").Cart, {}, {}> & import("./schema/cart.schema").Cart & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }>) | null;
+    }>;
     update(id: string, dto: UpdateCartDto): Promise<{
         success: boolean;
         message: string;

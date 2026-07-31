@@ -12,6 +12,7 @@ export declare class Order {
         color?: string;
     }[];
     totalAmount: number;
+    amountType: string;
     orderStatus: string;
     paymentStatus: string;
     shippingAddress: {

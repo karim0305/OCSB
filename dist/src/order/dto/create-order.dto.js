@@ -9,13 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateOrderDto = void 0;
+exports.CreateOrderDto = exports.PaymentMethod = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+var PaymentMethod;
+(function (PaymentMethod) {
+    PaymentMethod["COD"] = "cod";
+    PaymentMethod["CARD"] = "card";
+    PaymentMethod["EASYPAISA"] = "easypaisa";
+    PaymentMethod["JAZZCASH"] = "jazzcash";
+    PaymentMethod["BANK_TRANSFER"] = "bank_transfer";
+})(PaymentMethod || (exports.PaymentMethod = PaymentMethod = {}));
 class CreateOrderDto {
     userId;
     items;
     totalAmount;
+    paymentMethod;
     shippingAddress;
     orderStatus;
     paymentStatus;
@@ -51,6 +60,14 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateOrderDto.prototype, "totalAmount", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        enum: PaymentMethod,
+        example: PaymentMethod.COD,
+    }),
+    (0, class_validator_1.IsEnum)(PaymentMethod),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "paymentMethod", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: {

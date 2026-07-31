@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
  IsArray,
+ IsEnum,
  IsMongoId,
  IsNumber,
  IsObject,
@@ -8,6 +9,13 @@ import {
 } from 'class-validator';
 
 
+export enum PaymentMethod {
+  COD = 'cod',
+  CARD = 'card',
+  EASYPAISA = 'easypaisa',
+  JAZZCASH = 'jazzcash',
+  BANK_TRANSFER = 'bank_transfer',
+}
 
 export class CreateOrderDto {
 
@@ -43,6 +51,13 @@ items!:any[];
 })
 @IsNumber()
 totalAmount!:number;
+
+@ApiProperty({
+  enum: PaymentMethod,
+  example: PaymentMethod.COD,
+})
+@IsEnum(PaymentMethod)
+paymentMethod!: PaymentMethod;
 
 
 

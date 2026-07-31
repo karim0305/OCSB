@@ -14,6 +14,13 @@ export class Product {
   productName!: string;
 
   @Prop({
+  required: true,
+  unique: true,
+  trim: true,
+})
+productCode!: string;
+
+  @Prop({
     required: true,
     trim: true,
   })
@@ -51,6 +58,14 @@ export class Product {
     default: [],
   })
   colors!: string[];
+
+  @Prop({
+  type: String,
+  enum: ['active', 'inactive'],
+  default: 'active',
+})
+status!: string;
+  
 
   @Prop({
     type: [String],

@@ -2,6 +2,7 @@ import { HydratedDocument } from 'mongoose';
 export type ProductDocument = HydratedDocument<Product>;
 export declare class Product {
     productName: string;
+    productCode: string;
     brand: string;
     category: string;
     description: string;
@@ -9,6 +10,7 @@ export declare class Product {
     stockQty: number;
     sizes: string[];
     colors: string[];
+    status: string;
     images: string[];
     isNewArrival: boolean;
     isFeatured: boolean;

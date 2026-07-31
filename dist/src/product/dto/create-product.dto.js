@@ -9,11 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateProductDto = void 0;
+exports.CreateProductDto = exports.ProductStatus = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+var ProductStatus;
+(function (ProductStatus) {
+    ProductStatus["ACTIVE"] = "active";
+    ProductStatus["INACTIVE"] = "inactive";
+})(ProductStatus || (exports.ProductStatus = ProductStatus = {}));
 class CreateProductDto {
     productName;
+    productCode;
     brand;
     category;
     description;
@@ -21,6 +27,7 @@ class CreateProductDto {
     stockQty;
     sizes;
     colors;
+    status;
     images;
     isNewArrival;
     isFeatured;
@@ -34,6 +41,13 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "productName", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'PRD-1001',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProductDto.prototype, "productCode", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: 'Wolfgang',
@@ -88,6 +102,14 @@ __decorate([
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)
 ], CreateProductDto.prototype, "colors", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        enum: ProductStatus,
+        example: ProductStatus.ACTIVE,
+    }),
+    (0, class_validator_1.IsEnum)(ProductStatus),
+    __metadata("design:type", String)
+], CreateProductDto.prototype, "status", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         type: [String],

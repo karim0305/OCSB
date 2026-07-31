@@ -69,4 +69,19 @@ export declare class CartService {
         success: boolean;
         message: string;
     }>;
+    findByUserId(userId: string): Promise<{
+        success: boolean;
+        message: string;
+        data: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Cart, {}, {}> & Cart & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        }, {}, {}> & import("mongoose").Document<unknown, {}, Cart, {}, {}> & Cart & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }>) | null;
+    }>;
 }

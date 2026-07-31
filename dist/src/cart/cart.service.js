@@ -24,44 +24,59 @@ let CartService = class CartService {
     }
     async create(dto) {
         const existingCart = await this.cartModel.findOne({
-            userId: dto.userId
+            userId: dto.userId,
         });
-        if (existingCart) {
-            throw new common_1.ConflictException('User cart already exists');
+        if (!existingCart) {
+            const cart = await this.cartModel.create(dto);
+            return {
+                success: true,
+                message: 'Cart created successfully',
+                data: cart,
+            };
         }
-        const cart = await this.cartModel.create(dto);
+        for (const newItem of dto.items) {
+            const duplicateItem = existingCart.items.find((item) => item.productId.toString() === newItem.productId.toString() &&
+                item.size === newItem.size &&
+                item.color === newItem.color);
+            if (duplicateItem) {
+                throw new common_1.ConflictException(`${newItem.productName} (Size: ${newItem.size}, Color: ${newItem.color}) is already in your cart`);
+            }
+            existingCart.items.push(newItem);
+        }
+        existingCart.totalAmount = existingCart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        await existingCart.save();
         return {
             success: true,
-            message: 'Cart created successfully',
-            data: cart
+            message: 'Item added to cart successfully',
+            data: existingCart,
         };
     }
     async findAll() {
-        const carts = await this.cartModel.find()
+        const carts = await this.cartModel
+            .find()
             .populate('userId')
             .populate('items.productId');
         return {
             success: true,
             message: 'Carts fetched successfully',
-            data: carts
+            data: carts,
         };
     }
     async findOne(id) {
-        const cart = await this.cartModel.findById(id)
-            .populate('items.productId');
+        const cart = await this.cartModel.findById(id).populate('items.productId');
         if (!cart) {
             throw new common_1.NotFoundException('Cart not found');
         }
         return {
             success: true,
             message: 'Cart fetched successfully',
-            data: cart
+            data: cart,
         };
     }
     async update(id, dto) {
         const cart = await this.cartModel.findByIdAndUpdate(id, dto, {
             new: true,
-            runValidators: true
+            runValidators: true,
         });
         if (!cart) {
             throw new common_1.NotFoundException('Cart not found');
@@ -69,7 +84,7 @@ let CartService = class CartService {
         return {
             success: true,
             message: 'Cart updated successfully',
-            data: cart
+            data: cart,
         };
     }
     async remove(id) {
@@ -79,7 +94,17 @@ let CartService = class CartService {
         }
         return {
             success: true,
-            message: 'Cart deleted successfully'
+            message: 'Cart deleted successfully',
+        };
+    }
+    async findByUserId(userId) {
+        const cart = await this.cartModel
+            .findOne({ userId })
+            .populate('items.productId');
+        return {
+            success: true,
+            message: cart ? 'Cart fetched successfully' : 'No cart found',
+            data: cart,
         };
     }
 };

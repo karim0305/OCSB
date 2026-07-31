@@ -16,6 +16,7 @@ let Order = class Order {
     userId;
     items;
     totalAmount;
+    amountType;
     orderStatus;
     paymentStatus;
     shippingAddress;
@@ -70,6 +71,14 @@ __decorate([
     }),
     __metadata("design:type", Number)
 ], Order.prototype, "totalAmount", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        enum: ['cod', 'card', 'easypaisa', 'jazzcash', 'bank_transfer'],
+        default: 'cod',
+    }),
+    __metadata("design:type", String)
+], Order.prototype, "amountType", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         default: 'pending',

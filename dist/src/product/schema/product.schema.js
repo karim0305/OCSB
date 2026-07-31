@@ -13,6 +13,7 @@ exports.ProductSchema = exports.Product = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 let Product = class Product {
     productName;
+    productCode;
     brand;
     category;
     description;
@@ -20,6 +21,7 @@ let Product = class Product {
     stockQty;
     sizes;
     colors;
+    status;
     images;
     isNewArrival;
     isFeatured;
@@ -33,6 +35,14 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Product.prototype, "productName", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        required: true,
+        unique: true,
+        trim: true,
+    }),
+    __metadata("design:type", String)
+], Product.prototype, "productCode", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         required: true,
@@ -79,6 +89,14 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Product.prototype, "colors", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active',
+    }),
+    __metadata("design:type", String)
+], Product.prototype, "status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         type: [String],
