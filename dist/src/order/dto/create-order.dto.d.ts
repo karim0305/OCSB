@@ -7,6 +7,7 @@ export declare enum PaymentMethod {
 }
 export declare class CreateOrderDto {
     userId: string;
+    orderNumber: string;
     items: any[];
     totalAmount: number;
     paymentMethod: PaymentMethod;

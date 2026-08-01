@@ -23,11 +23,15 @@ let OrderService = class OrderService {
         this.orderModel = orderModel;
     }
     async create(dto) {
-        const order = await this.orderModel.create(dto);
+        const orderNumber = `OCS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const order = await this.orderModel.create({
+            ...dto,
+            orderNumber,
+        });
         return {
             success: true,
             message: 'Order created successfully',
-            data: order
+            data: order,
         };
     }
     async findAll() {
@@ -36,12 +40,12 @@ let OrderService = class OrderService {
             .populate('userId')
             .populate('items.productId')
             .sort({
-            createdAt: -1
+            createdAt: -1,
         });
         return {
             success: true,
             message: 'Orders fetched successfully',
-            data: orders
+            data: orders,
         };
     }
     async findOne(id) {
@@ -54,13 +58,13 @@ let OrderService = class OrderService {
         return {
             success: true,
             message: 'Order fetched successfully',
-            data: order
+            data: order,
         };
     }
     async update(id, dto) {
         const order = await this.orderModel.findByIdAndUpdate(id, dto, {
             new: true,
-            runValidators: true
+            runValidators: true,
         });
         if (!order) {
             throw new common_1.NotFoundException('Order not found');
@@ -68,7 +72,7 @@ let OrderService = class OrderService {
         return {
             success: true,
             message: 'Order updated successfully',
-            data: order
+            data: order,
         };
     }
     async remove(id) {
@@ -78,7 +82,7 @@ let OrderService = class OrderService {
         }
         return {
             success: true,
-            message: 'Order deleted successfully'
+            message: 'Order deleted successfully',
         };
     }
 };

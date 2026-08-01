@@ -26,6 +26,11 @@ export class CreateOrderDto {
 @IsMongoId()
 userId!:string;
 
+  @ApiProperty({
+    example: 'ORD-000001',
+  })
+  @IsString()
+  orderNumber!: string;
 
 
 @ApiProperty({

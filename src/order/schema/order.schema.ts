@@ -1,138 +1,122 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
-
 export type OrderDocument = HydratedDocument<Order>;
 
-
 @Schema({
-  timestamps:true,
+  timestamps: true,
 })
 export class Order {
-
-
   @Prop({
-    type:Types.ObjectId,
-    ref:'User',
-    required:true,
+    type: Types.ObjectId,
+    ref: 'User',
+    required: true,
   })
   userId!: Types.ObjectId;
 
-
+  @Prop({
+    type: String,
+    required: true,
+    unique: true,
+  })
+  orderNumber!: string;
 
   @Prop({
-    type:[
+    type: [
       {
-        productId:{
-          type:Types.ObjectId,
-          ref:'Product',
+        productId: {
+          type: Types.ObjectId,
+          ref: 'Product',
         },
 
-        productName:{
-          type:String,
-          required:true,
+        productName: {
+          type: String,
+          required: true,
         },
 
-        image:{
-          type:String,
+        image: {
+          type: String,
         },
 
-        price:{
-          type:Number,
-          required:true,
+        price: {
+          type: Number,
+          required: true,
         },
 
-        quantity:{
-          type:Number,
-          required:true,
+        quantity: {
+          type: Number,
+          required: true,
         },
 
-        size:{
-          type:String,
+        size: {
+          type: String,
         },
 
-        color:{
-          type:String,
-        }
-      }
+        color: {
+          type: String,
+        },
+      },
     ],
-    required:true,
+    required: true,
   })
   items!: {
-    productId:Types.ObjectId;
-    productName:string;
-    image?:string;
-    price:number;
-    quantity:number;
-    size?:string;
-    color?:string;
+    productId: Types.ObjectId;
+    productName: string;
+    image?: string;
+    price: number;
+    quantity: number;
+    size?: string;
+    color?: string;
   }[];
 
-
-
   @Prop({
-    required:true,
+    required: true,
   })
-  totalAmount!:number;
+  totalAmount!: number;
 
   @Prop({
-  type: String,
-  enum: ['cod', 'card', 'easypaisa', 'jazzcash', 'bank_transfer'],
-  default: 'cod',
-})
-amountType!: string;
-
-
+    type: String,
+    enum: ['cod', 'card', 'easypaisa', 'jazzcash', 'bank_transfer'],
+    default: 'cod',
+  })
+  amountType!: string;
 
   @Prop({
-    default:'pending',
-    enum:[
+    default: 'pending',
+    enum: [
       'pending',
       'confirmed',
       'processing',
       'shipped',
       'delivered',
-      'cancelled'
-    ]
+      'cancelled',
+    ],
   })
-  orderStatus!:string;
-
-
+  orderStatus!: string;
 
   @Prop({
-    default:'pending',
-    enum:[
-      'pending',
-      'paid',
-      'failed'
-    ]
+    default: 'pending',
+    enum: ['pending', 'paid', 'failed'],
   })
-  paymentStatus!:string;
-
-
-
+  paymentStatus!: string;
 
   @Prop({
-    type:{
-      fullName:String,
-      phone:String,
-      city:String,
-      address:String,
-      postalCode:String
+    type: {
+      fullName: String,
+      phone: String,
+      city: String,
+      address: String,
+      postalCode: String,
     },
-    required:true
+    required: true,
   })
   shippingAddress!: {
-    fullName:string;
-    phone:string;
-    city:string;
-    address:string;
-    postalCode:string;
+    fullName: string;
+    phone: string;
+    city: string;
+    address: string;
+    postalCode: string;
   };
-
 }
 
-
-
-export const OrderSchema =
-SchemaFactory.createForClass(Order);
+export const OrderSchema = SchemaFactory.createForClass(Order);

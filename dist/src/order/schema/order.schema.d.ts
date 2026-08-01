@@ -2,6 +2,7 @@ import { HydratedDocument, Types } from 'mongoose';
 export type OrderDocument = HydratedDocument<Order>;
 export declare class Order {
     userId: Types.ObjectId;
+    orderNumber: string;
     items: {
         productId: Types.ObjectId;
         productName: string;

@@ -22,6 +22,7 @@ var PaymentMethod;
 })(PaymentMethod || (exports.PaymentMethod = PaymentMethod = {}));
 class CreateOrderDto {
     userId;
+    orderNumber;
     items;
     totalAmount;
     paymentMethod;
@@ -37,6 +38,13 @@ __decorate([
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], CreateOrderDto.prototype, "userId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'ORD-000001',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "orderNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: [

@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let Order = class Order {
     userId;
+    orderNumber;
     items;
     totalAmount;
     amountType;
@@ -30,6 +31,14 @@ __decorate([
     }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Order.prototype, "userId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        required: true,
+        unique: true,
+    }),
+    __metadata("design:type", String)
+], Order.prototype, "orderNumber", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         type: [
@@ -58,8 +67,8 @@ __decorate([
                 },
                 color: {
                     type: String,
-                }
-            }
+                },
+            },
         ],
         required: true,
     }),
@@ -88,19 +97,15 @@ __decorate([
             'processing',
             'shipped',
             'delivered',
-            'cancelled'
-        ]
+            'cancelled',
+        ],
     }),
     __metadata("design:type", String)
 ], Order.prototype, "orderStatus", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         default: 'pending',
-        enum: [
-            'pending',
-            'paid',
-            'failed'
-        ]
+        enum: ['pending', 'paid', 'failed'],
     }),
     __metadata("design:type", String)
 ], Order.prototype, "paymentStatus", void 0);
@@ -111,9 +116,9 @@ __decorate([
             phone: String,
             city: String,
             address: String,
-            postalCode: String
+            postalCode: String,
         },
-        required: true
+        required: true,
     }),
     __metadata("design:type", Object)
 ], Order.prototype, "shippingAddress", void 0);
