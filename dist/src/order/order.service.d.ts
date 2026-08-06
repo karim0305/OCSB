@@ -2,9 +2,13 @@ import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schema/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { NotificationService } from '../notification/notification.service';
 export declare class OrderService {
     private orderModel;
-    constructor(orderModel: Model<OrderDocument>);
+    private readonly notificationService;
+    constructor(orderModel: Model<OrderDocument>, notificationService: NotificationService);
+    private orderStatusMessages;
+    private paymentStatusMessages;
     create(dto: CreateOrderDto): Promise<{
         success: boolean;
         message: string;

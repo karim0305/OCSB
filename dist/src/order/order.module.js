@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const order_schema_1 = require("./schema/order.schema");
 const order_controller_1 = require("./order.controller");
 const order_service_1 = require("./order.service");
+const notification_module_1 = require("../notification/notification.module");
 let OrderModule = class OrderModule {
 };
 exports.OrderModule = OrderModule;
@@ -21,19 +22,14 @@ exports.OrderModule = OrderModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 {
                     name: order_schema_1.Order.name,
-                    schema: order_schema_1.OrderSchema
-                }
-            ])
+                    schema: order_schema_1.OrderSchema,
+                },
+            ]),
+            notification_module_1.NotificationModule,
         ],
-        controllers: [
-            order_controller_1.OrderController
-        ],
-        providers: [
-            order_service_1.OrderService
-        ],
-        exports: [
-            order_service_1.OrderService
-        ]
+        controllers: [order_controller_1.OrderController],
+        providers: [order_service_1.OrderService],
+        exports: [order_service_1.OrderService],
     })
 ], OrderModule);
 //# sourceMappingURL=order.module.js.map

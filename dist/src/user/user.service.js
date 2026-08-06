@@ -18,10 +18,14 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_schema_1 = require("./schema/user.schema");
 const bcrypt = require("bcrypt");
+const notification_service_1 = require("../notification/notification.service");
+const create_notification_dto_1 = require("../notification/dto/create-notification.dto");
 let UserService = class UserService {
     userModel;
-    constructor(userModel) {
+    notificationService;
+    constructor(userModel, notificationService) {
         this.userModel = userModel;
+        this.notificationService = notificationService;
     }
     async create(createUserDto) {
         Object.keys(createUserDto).forEach((key) => {
@@ -59,7 +63,15 @@ let UserService = class UserService {
                 ...createUserDto,
                 password: hashedPassword,
             });
-            return await createdUser.save();
+            const savedUser = await createdUser.save();
+            await this.notificationService.create({
+                userId: savedUser._id.toString(),
+                title: 'Welcome! 🎉',
+                body: `Hi ${savedUser.name || 'there'}, welcome to our store! Start exploring now.`,
+                type: create_notification_dto_1.NotificationType.GENERAL,
+                data: {},
+            });
+            return savedUser;
         }
         catch (error) {
             throw new common_1.BadRequestException({
@@ -102,6 +114,7 @@ exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        notification_service_1.NotificationService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

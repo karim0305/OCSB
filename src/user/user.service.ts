@@ -9,11 +9,14 @@ import { User, UserDocument } from './schema/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from 'src/notification/dto/create-notification.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   // ✅ Create new user
@@ -72,7 +75,18 @@ async create(createUserDto: CreateUserDto): Promise<User> {
       password: hashedPassword,
     });
 
-    return await createdUser.save();
+    const savedUser = await createdUser.save();
+
+    // 👇 welcome notification
+    await this.notificationService.create({
+      userId: savedUser._id.toString(),
+      title: 'Welcome! 🎉',
+      body: `Hi ${savedUser.name || 'there'}, welcome to our store! Start exploring now.`,
+      type: NotificationType.GENERAL,
+      data: {},
+    });
+
+    return savedUser;
   } catch (error) {
     throw new BadRequestException({
       message: '❌ Failed to create user',

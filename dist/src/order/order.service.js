@@ -17,16 +17,70 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const order_schema_1 = require("./schema/order.schema");
+const notification_service_1 = require("../notification/notification.service");
+const create_notification_dto_1 = require("../notification/dto/create-notification.dto");
 let OrderService = class OrderService {
     orderModel;
-    constructor(orderModel) {
+    notificationService;
+    constructor(orderModel, notificationService) {
         this.orderModel = orderModel;
+        this.notificationService = notificationService;
     }
+    orderStatusMessages = {
+        pending: {
+            title: 'Order Placed ✅',
+            body: 'Your order has been placed and is pending confirmation.',
+        },
+        confirmed: {
+            title: 'Order Confirmed 👍',
+            body: 'Your order has been confirmed and will be processed soon.',
+        },
+        processing: {
+            title: 'Order Processing 📦',
+            body: 'Your order is being packed and prepared for shipment.',
+        },
+        shipped: {
+            title: 'Order Shipped 🚚',
+            body: 'Your order has been shipped and is on its way to you.',
+        },
+        delivered: {
+            title: 'Order Delivered ✅',
+            body: 'Your order has been delivered successfully. Enjoy!',
+        },
+        cancelled: {
+            title: 'Order Cancelled ❌',
+            body: 'Your order has been cancelled.',
+        },
+    };
+    paymentStatusMessages = {
+        pending: {
+            title: 'Payment Pending ⏳',
+            body: 'Your payment is pending. Please complete it to confirm your order.',
+        },
+        paid: {
+            title: 'Payment Received 💰',
+            body: 'Your payment has been received successfully.',
+        },
+        failed: {
+            title: 'Payment Failed ⚠️',
+            body: 'Your payment could not be processed. Please try again.',
+        },
+    };
     async create(dto) {
         const orderNumber = `OCS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const order = await this.orderModel.create({
             ...dto,
             orderNumber,
+        });
+        await this.notificationService.create({
+            userId: order.userId.toString(),
+            title: 'Order Placed ✅',
+            body: `Your order #${order.orderNumber} has been placed successfully!`,
+            type: create_notification_dto_1.NotificationType.ORDER,
+            data: {
+                orderId: order._id.toString(),
+                orderNumber: order.orderNumber,
+            },
         });
         return {
             success: true,
@@ -62,12 +116,50 @@ let OrderService = class OrderService {
         };
     }
     async update(id, dto) {
+        const existingOrder = await this.orderModel.findById(id);
+        if (!existingOrder) {
+            throw new common_1.NotFoundException('Order not found');
+        }
+        const previousOrderStatus = existingOrder.orderStatus;
+        const previousPaymentStatus = existingOrder.paymentStatus;
         const order = await this.orderModel.findByIdAndUpdate(id, dto, {
             new: true,
             runValidators: true,
         });
         if (!order) {
             throw new common_1.NotFoundException('Order not found');
+        }
+        if (dto.orderStatus && dto.orderStatus !== previousOrderStatus) {
+            const message = this.orderStatusMessages[dto.orderStatus];
+            if (message) {
+                await this.notificationService.create({
+                    userId: order.userId.toString(),
+                    title: message.title,
+                    body: `${message.body} (Order #${order.orderNumber})`,
+                    type: create_notification_dto_1.NotificationType.ORDER,
+                    data: {
+                        orderId: order._id.toString(),
+                        orderNumber: order.orderNumber,
+                        orderStatus: order.orderStatus,
+                    },
+                });
+            }
+        }
+        if (dto.paymentStatus && dto.paymentStatus !== previousPaymentStatus) {
+            const message = this.paymentStatusMessages[dto.paymentStatus];
+            if (message) {
+                await this.notificationService.create({
+                    userId: order.userId.toString(),
+                    title: message.title,
+                    body: `${message.body} (Order #${order.orderNumber})`,
+                    type: create_notification_dto_1.NotificationType.ORDER,
+                    data: {
+                        orderId: order._id.toString(),
+                        orderNumber: order.orderNumber,
+                        paymentStatus: order.paymentStatus,
+                    },
+                });
+            }
         }
         return {
             success: true,
@@ -90,6 +182,7 @@ exports.OrderService = OrderService;
 exports.OrderService = OrderService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(order_schema_1.Order.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        notification_service_1.NotificationService])
 ], OrderService);
 //# sourceMappingURL=order.service.js.map
