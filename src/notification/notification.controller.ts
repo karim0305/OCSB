@@ -3,10 +3,11 @@ import { Controller, Post, Get, Patch, Delete, Body, Param, UseGuards, Req } fro
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-
+import { JwtAuthGuard } from '../user/auth/jwt-auth.guard';   // 👈 add karein
 
 @ApiTags('Notifications')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)        // 👈 add karein
 @Controller('notifications')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}

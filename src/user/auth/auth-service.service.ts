@@ -34,7 +34,7 @@ export class AuthService {
         field: 'password',
       });
     }
-
+  console.log('=== SECRET AT LOGIN TIME ===', process.env.JWT_SECRET); 
     // 👇 JWT payload (you can add role, etc.)
     const payload = { sub: user._id, email: user.email };
 

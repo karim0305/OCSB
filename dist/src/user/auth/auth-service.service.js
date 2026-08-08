@@ -42,6 +42,7 @@ let AuthService = class AuthService {
                 field: 'password',
             });
         }
+        console.log('=== SECRET AT LOGIN TIME ===', process.env.JWT_SECRET);
         const payload = { sub: user._id, email: user.email };
         const token = this.jwtService.sign(payload);
         const { password: _, ...userWithoutPassword } = user.toObject();
