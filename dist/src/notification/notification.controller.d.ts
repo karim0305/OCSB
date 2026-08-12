@@ -21,6 +21,9 @@ export declare class NotificationController {
     }> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>)[]>;
+    getUnreadCount(req: any): Promise<{
+        count: number;
+    }>;
     markAsRead(req: any, id: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schema/notification.schema").Notification, {}, {}> & import("./schema/notification.schema").Notification & {
         _id: import("mongoose").Types.ObjectId;
     } & {

@@ -4,6 +4,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import * as dns from 'dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 dotenv.config();
 

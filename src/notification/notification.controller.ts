@@ -24,12 +24,18 @@ export class NotificationController {
     return this.notificationService.findAllForUser(req.user.userId);
   }
 
+  // 👇 NEW: bell icon badge ke liye lightweight unread count
+  @Get('unread-count')
+  @ApiOperation({ summary: 'Get unread notification count for logged-in user' })
+  getUnreadCount(@Req() req: any) {
+    return this.notificationService.countUnread(req.user.userId);
+  }
 
   @Patch(':id/read')
-@ApiOperation({ summary: 'Mark notification as read' })
-markAsRead(@Req() req: any, @Param('id') id: string) {
-  return this.notificationService.markAsRead(req.user.userId, id);
-}
+  @ApiOperation({ summary: 'Mark notification as read' })
+  markAsRead(@Req() req: any, @Param('id') id: string) {
+    return this.notificationService.markAsRead(req.user.userId, id);
+  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a notification' })

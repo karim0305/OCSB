@@ -17,10 +17,13 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const notification_schema_1 = require("./schema/notification.schema");
+const user_schema_1 = require("../user/schema/user.schema");
 let NotificationService = class NotificationService {
     notificationModel;
-    constructor(notificationModel) {
+    userModel;
+    constructor(notificationModel, userModel) {
         this.notificationModel = notificationModel;
+        this.userModel = userModel;
     }
     async create(dto) {
         return this.notificationModel.create({
@@ -34,6 +37,14 @@ let NotificationService = class NotificationService {
             .sort({ createdAt: -1 })
             .lean();
     }
+    async countUnread(userId) {
+        const count = await this.notificationModel.countDocuments({
+            userId: new mongoose_2.Types.ObjectId(userId),
+            status: 'active',
+            isRead: false,
+        });
+        return { count };
+    }
     async markAsRead(userId, id) {
         return this.notificationModel.findOneAndUpdate({ _id: id, userId: new mongoose_2.Types.ObjectId(userId) }, { isRead: true }, { new: true });
     }
@@ -41,11 +52,35 @@ let NotificationService = class NotificationService {
         const notification = await this.notificationModel.findOneAndUpdate({ _id: id, userId: new mongoose_2.Types.ObjectId(userId) }, { status: 'deleted' }, { new: true });
         return notification;
     }
+    async notifyAllAdmins(title, body, type, data = {}) {
+        console.log('🔔 notifyAllAdmins() CALLED with title:', title);
+        const admins = await this.userModel
+            .find({ role: 'Admin' })
+            .select('_id')
+            .lean();
+        console.log('🔔 Admins found:', admins.length, admins);
+        if (!admins.length) {
+            console.log('⚠️ No admins found — skipping notification creation');
+            return;
+        }
+        const result = await this.notificationModel.insertMany(admins.map((admin) => ({
+            userId: admin._id,
+            title,
+            body,
+            type,
+            data,
+            isRead: false,
+            status: 'active',
+        })));
+        console.log('✅ Admin notifications created:', result.length);
+    }
 };
 exports.NotificationService = NotificationService;
 exports.NotificationService = NotificationService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(notification_schema_1.Notification.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], NotificationService);
 //# sourceMappingURL=notification.service.js.map

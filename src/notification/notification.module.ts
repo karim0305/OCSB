@@ -4,10 +4,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Notification, NotificationSchema } from './schema/notification.schema';
 import { NotificationService } from './notification.service';
 import { NotificationController } from './notification.controller';
+import { User, UserSchema } from '../user/schema/user.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]),
+    MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema },  { name: User.name, schema: UserSchema },]),
     // DeviceModule hata diya — ab zaroorat nahi
   ],
   controllers: [NotificationController],

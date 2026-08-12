@@ -6,6 +6,7 @@ export enum NotificationType {
   ORDER = 'order',
   PROMO = 'promo',
   GENERAL = 'general',
+  USER = 'user',
 }
 
 export class CreateNotificationDto {

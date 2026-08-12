@@ -27,7 +27,11 @@ let CartService = class CartService {
             userId: dto.userId,
         });
         if (!existingCart) {
-            const cart = await this.cartModel.create(dto);
+            const totalAmount = dto.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const cart = await this.cartModel.create({
+                ...dto,
+                totalAmount,
+            });
             return {
                 success: true,
                 message: 'Cart created successfully',
@@ -74,7 +78,11 @@ let CartService = class CartService {
         };
     }
     async update(id, dto) {
-        const cart = await this.cartModel.findByIdAndUpdate(id, dto, {
+        const payload = { ...dto };
+        if (dto.items) {
+            payload.totalAmount = dto.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        }
+        const cart = await this.cartModel.findByIdAndUpdate(id, payload, {
             new: true,
             runValidators: true,
         });

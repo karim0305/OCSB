@@ -71,6 +71,7 @@ let UserService = class UserService {
                 type: create_notification_dto_1.NotificationType.GENERAL,
                 data: {},
             });
+            await this.notificationService.notifyAllAdmins('New User Registered 👤', `${savedUser.name || 'A new user'} (${savedUser.email || savedUser.phone}) just signed up.`, create_notification_dto_1.NotificationType.USER, { userId: savedUser._id.toString() });
             return savedUser;
         }
         catch (error) {

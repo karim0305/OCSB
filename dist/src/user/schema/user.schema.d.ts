@@ -1,4 +1,4 @@
-import { Document, Types } from "mongoose";
+import { Document, Types } from 'mongoose';
 export type UserDocument = User & Document;
 export declare class User {
     UserId: Types.ObjectId;

@@ -17,6 +17,7 @@ var NotificationType;
     NotificationType["ORDER"] = "order";
     NotificationType["PROMO"] = "promo";
     NotificationType["GENERAL"] = "general";
+    NotificationType["USER"] = "user";
 })(NotificationType || (exports.NotificationType = NotificationType = {}));
 class CreateNotificationDto {
     userId;

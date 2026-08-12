@@ -5,6 +5,8 @@ const app_module_1 = require("./app.module");
 const config_1 = require("@nestjs/config");
 const swagger_1 = require("@nestjs/swagger");
 const dotenv = require("dotenv");
+const dns = require("dns");
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 dotenv.config();
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);

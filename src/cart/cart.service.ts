@@ -27,7 +27,18 @@ export class CartService {
 
     // Case 1: Cart exist nahi karta — naya bana do
     if (!existingCart) {
-      const cart = await this.cartModel.create(dto);
+      // 👇 FIX: totalAmount pehle calculate nahi ho raha tha, isliye
+      // naye cart ka totalAmount hamesha 0 (schema default) rehta tha.
+      const totalAmount = dto.items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+      );
+
+      const cart = await this.cartModel.create({
+        ...dto,
+        totalAmount,
+      });
+
       return {
         success: true,
         message: 'Cart created successfully',
@@ -100,7 +111,18 @@ export class CartService {
   }
 
   async update(id: string, dto: UpdateCartDto) {
-    const cart = await this.cartModel.findByIdAndUpdate(id, dto, {
+    // 👇 FIX (bonus): agar frontend items update karta hai (quantity change/remove),
+    // to totalAmount bhi yahan recalculate hona chahiye, warna wo stale reh jayega
+    // jab tak koi doosra update na aaye jo explicitly totalAmount bhi bheje.
+    const payload: any = { ...dto };
+    if (dto.items) {
+      payload.totalAmount = dto.items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+      );
+    }
+
+    const cart = await this.cartModel.findByIdAndUpdate(id, payload, {
       new: true,
       runValidators: true,
     });

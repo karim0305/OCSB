@@ -29,6 +29,9 @@ let NotificationController = class NotificationController {
     findAll(req) {
         return this.notificationService.findAllForUser(req.user.userId);
     }
+    getUnreadCount(req) {
+        return this.notificationService.countUnread(req.user.userId);
+    }
     markAsRead(req, id) {
         return this.notificationService.markAsRead(req.user.userId, id);
     }
@@ -53,6 +56,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], NotificationController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('unread-count'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get unread notification count for logged-in user' }),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], NotificationController.prototype, "getUnreadCount", null);
 __decorate([
     (0, common_1.Patch)(':id/read'),
     (0, swagger_1.ApiOperation)({ summary: 'Mark notification as read' }),

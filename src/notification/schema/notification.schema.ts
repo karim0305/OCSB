@@ -17,7 +17,7 @@ export class Notification {
 
   @Prop({
     type: String,
-    enum: ['order', 'promo', 'general'],
+    enum: ['order', 'promo', 'general', 'user'], // 👈 'user' add kiya
     default: 'general',
   })
   type!: string;

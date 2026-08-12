@@ -37,15 +37,15 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "name", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true, lowercase: true }),
+    (0, mongoose_1.Prop)({ lowercase: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({}),
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)({}),
     __metadata("design:type", String)
 ], User.prototype, "cnic", void 0);
 __decorate([
@@ -53,11 +53,11 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "address", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: "Customer" }),
+    (0, mongoose_1.Prop)({ default: 'Customer' }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: "https://via.placeholder.com/100" }),
+    (0, mongoose_1.Prop)({ default: 'https://via.placeholder.com/100' }),
     __metadata("design:type", String)
 ], User.prototype, "image", void 0);
 __decorate([
@@ -65,11 +65,11 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "lastLogin", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, default: "Active" }),
+    (0, mongoose_1.Prop)({ required: true, default: 'Active' }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: "123456" }),
+    (0, mongoose_1.Prop)({ default: '123456' }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
