@@ -71,7 +71,7 @@ export class OrderService {
       orderNumber,
     });
 
-    // 👇 order create hone pe notification
+    // 👇 order create hone pe customer ko notification
     await this.notificationService.create({
       userId: order.userId.toString(),
       title: 'Order Placed ✅',
@@ -82,6 +82,18 @@ export class OrderService {
         orderNumber: order.orderNumber,
       },
     });
+
+    // 👇 NEW: order create hone pe SAARE admins ko bhi notification
+    await this.notificationService.notifyAllAdmins(
+      'New Order Placed 🛍️',
+      `Order #${order.orderNumber} placed — Rs ${order.totalAmount}`,
+      NotificationType.ORDER,
+      {
+        orderId: order._id.toString(),
+        orderNumber: order.orderNumber,
+        totalAmount: order.totalAmount,
+      },
+    );
 
     return {
       success: true,
@@ -161,6 +173,20 @@ export class OrderService {
             orderStatus: order.orderStatus,
           },
         });
+
+        // 👇 NEW: agar order cancel hua (ya koi bhi status change), admins ko bhi pata chale
+        if (dto.orderStatus === 'cancelled') {
+          await this.notificationService.notifyAllAdmins(
+            'Order Cancelled ❌',
+            `Order #${order.orderNumber} was cancelled.`,
+            NotificationType.ORDER,
+            {
+              orderId: order._id.toString(),
+              orderNumber: order.orderNumber,
+              orderStatus: order.orderStatus,
+            },
+          );
+        }
       }
     }
 

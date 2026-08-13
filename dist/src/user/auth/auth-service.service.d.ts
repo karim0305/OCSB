@@ -20,4 +20,16 @@ export declare class AuthService {
     resetPassword(email: string, password: string): Promise<{
         message: string;
     }>;
+    googleLogin(idToken: string): Promise<{
+        access_token: string;
+        user: any;
+    }>;
+    sendPhoneOtp(phone: string): Promise<{
+        message: string;
+    }>;
+    private sendOtpSms;
+    verifyPhoneOtp(phone: string, otp: string, name?: string): Promise<{
+        access_token: string;
+        user: any;
+    }>;
 }

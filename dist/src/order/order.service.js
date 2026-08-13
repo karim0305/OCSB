@@ -82,6 +82,11 @@ let OrderService = class OrderService {
                 orderNumber: order.orderNumber,
             },
         });
+        await this.notificationService.notifyAllAdmins('New Order Placed 🛍️', `Order #${order.orderNumber} placed — Rs ${order.totalAmount}`, create_notification_dto_1.NotificationType.ORDER, {
+            orderId: order._id.toString(),
+            orderNumber: order.orderNumber,
+            totalAmount: order.totalAmount,
+        });
         return {
             success: true,
             message: 'Order created successfully',
@@ -143,6 +148,13 @@ let OrderService = class OrderService {
                         orderStatus: order.orderStatus,
                     },
                 });
+                if (dto.orderStatus === 'cancelled') {
+                    await this.notificationService.notifyAllAdmins('Order Cancelled ❌', `Order #${order.orderNumber} was cancelled.`, create_notification_dto_1.NotificationType.ORDER, {
+                        orderId: order._id.toString(),
+                        orderNumber: order.orderNumber,
+                        orderStatus: order.orderStatus,
+                    });
+                }
             }
         }
         if (dto.paymentStatus && dto.paymentStatus !== previousPaymentStatus) {

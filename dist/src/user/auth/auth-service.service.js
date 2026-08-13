@@ -17,9 +17,13 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const bcrypt = require("bcrypt");
+const crypto_1 = require("crypto");
 const jwt_1 = require("@nestjs/jwt");
+const google_auth_library_1 = require("google-auth-library");
+const twilio = require("twilio");
 const user_schema_1 = require("../schema/user.schema");
 const nodemailer = require("nodemailer");
+const googleClient = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 let AuthService = class AuthService {
     userModel;
     jwtService;
@@ -42,7 +46,12 @@ let AuthService = class AuthService {
                 field: 'password',
             });
         }
-        console.log('=== SECRET AT LOGIN TIME ===', process.env.JWT_SECRET);
+        if (user.status !== 'Active') {
+            throw new common_1.ForbiddenException({
+                message: '❌ Your account has been deleted. Please contact support.',
+                field: 'status',
+            });
+        }
         const payload = { sub: user._id, email: user.email };
         const token = this.jwtService.sign(payload);
         const { password: _, ...userWithoutPassword } = user.toObject();
@@ -122,6 +131,121 @@ let AuthService = class AuthService {
         user.password = hashedPassword;
         await user.save();
         return { message: 'Password reset successfully' };
+    }
+    async googleLogin(idToken) {
+        if (!idToken) {
+            throw new common_1.BadRequestException({ message: 'idToken is required', field: 'idToken' });
+        }
+        let payload;
+        try {
+            const ticket = await googleClient.verifyIdToken({
+                idToken,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+            payload = ticket.getPayload();
+        }
+        catch (err) {
+            throw new common_1.BadRequestException({ message: 'Invalid Google token' });
+        }
+        if (!payload?.email) {
+            throw new common_1.BadRequestException({ message: 'Google account has no email' });
+        }
+        let user = await this.userModel.findOne({ email: payload.email }).exec();
+        if (!user) {
+            const randomPassword = await bcrypt.hash((0, crypto_1.randomUUID)(), 10);
+            user = await this.userModel.create({
+                name: payload.name || 'Google User',
+                email: payload.email,
+                password: randomPassword,
+                phone: undefined,
+                cnic: undefined,
+                role: 'Customer',
+                status: 'Active',
+                image: payload.picture,
+                authProvider: 'google',
+            });
+        }
+        else if (user.status !== 'Active') {
+            throw new common_1.ForbiddenException({
+                message: '❌ Your account has been deactivated. Please contact support.',
+                field: 'status',
+            });
+        }
+        const jwtPayload = { sub: user._id, email: user.email };
+        const token = this.jwtService.sign(jwtPayload);
+        const { password: _, ...userWithoutPassword } = user.toObject();
+        return { access_token: token, user: userWithoutPassword };
+    }
+    async sendPhoneOtp(phone) {
+        if (!phone) {
+            throw new common_1.BadRequestException({ message: 'Phone number is required', field: 'phone' });
+        }
+        let user = await this.userModel.findOne({ phone }).exec();
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
+        if (!user) {
+            const randomPassword = await bcrypt.hash((0, crypto_1.randomUUID)(), 10);
+            user = await this.userModel.create({
+                name: 'New User',
+                email: undefined,
+                phone,
+                password: randomPassword,
+                cnic: undefined,
+                role: 'Customer',
+                status: 'Inactive',
+                authProvider: 'phone',
+                otp,
+                otpExpiresAt,
+            });
+        }
+        else {
+            user.otp = otp;
+            user.otpExpiresAt = otpExpiresAt;
+            await user.save();
+        }
+        await this.sendOtpSms(phone, otp);
+        return { message: 'OTP sent successfully' };
+    }
+    async sendOtpSms(phone, otp) {
+        const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
+        if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
+            throw new Error('SMS is not configured. Please set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NUMBER.');
+        }
+        const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+        await client.messages.create({
+            body: `Your verification code is ${otp}`,
+            from: TWILIO_PHONE_NUMBER,
+            to: phone,
+        });
+    }
+    async verifyPhoneOtp(phone, otp, name) {
+        const user = await this.userModel.findOne({ phone }).exec();
+        if (!user) {
+            throw new common_1.NotFoundException({
+                message: 'No OTP request found for this phone number',
+                field: 'phone',
+            });
+        }
+        if (!user.otp || !otp) {
+            throw new common_1.BadRequestException({ message: 'OTP is required' });
+        }
+        if (user.otp !== otp) {
+            throw new common_1.BadRequestException({ message: 'Invalid OTP' });
+        }
+        if (user.otpExpiresAt && user.otpExpiresAt.getTime() < Date.now()) {
+            throw new common_1.BadRequestException({ message: 'OTP has expired' });
+        }
+        user.otp = undefined;
+        user.otpExpiresAt = undefined;
+        user.status = 'Active';
+        if (name) {
+            user.name = name;
+        }
+        await user.save();
+        const payload = { sub: user._id, email: user.email };
+        const token = this.jwtService.sign(payload);
+        const { password: _, ...userWithoutPassword } = user.toObject();
+        return { access_token: token, user: userWithoutPassword };
     }
 };
 exports.AuthService = AuthService;
