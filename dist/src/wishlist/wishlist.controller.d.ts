@@ -19,7 +19,7 @@ export declare class WishlistController {
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
-    findAll(): Promise<{
+    findAll(userId?: string): Promise<{
         success: boolean;
         message: string;
         data: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schema/wishlist.schema").Wishlist, {}, {}> & import("./schema/wishlist.schema").Wishlist & {

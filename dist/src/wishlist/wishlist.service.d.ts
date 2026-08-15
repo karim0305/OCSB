@@ -20,7 +20,7 @@ export declare class WishlistService {
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
-    findAll(): Promise<{
+    findAll(userId?: string): Promise<{
         success: boolean;
         message: string;
         data: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Wishlist, {}, {}> & Wishlist & {

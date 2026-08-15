@@ -26,8 +26,8 @@ let WishlistController = class WishlistController {
     create(dto) {
         return this.wishlistService.create(dto);
     }
-    findAll() {
-        return this.wishlistService.findAll();
+    findAll(userId) {
+        return this.wishlistService.findAll(userId);
     }
     findOne(id) {
         return this.wishlistService.findOne(id);
@@ -53,10 +53,12 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({
-        summary: 'Get All Wishlists'
+        summary: 'Get All Wishlists (ya userId se filter karein)'
     }),
+    (0, swagger_1.ApiQuery)({ name: 'userId', required: false }),
+    __param(0, (0, common_1.Query)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], WishlistController.prototype, "findAll", null);
 __decorate([

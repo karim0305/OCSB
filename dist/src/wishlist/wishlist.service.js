@@ -36,9 +36,10 @@ let WishlistService = class WishlistService {
             data: wishlist
         };
     }
-    async findAll() {
+    async findAll(userId) {
+        const filter = userId ? { userId } : {};
         const wishlists = await this.wishlistModel
-            .find()
+            .find(filter)
             .populate('userId')
             .populate('products');
         return {
