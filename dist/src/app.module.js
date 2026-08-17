@@ -19,6 +19,7 @@ const cart_module_1 = require("./cart/cart.module");
 const wishlist_module_1 = require("./wishlist/wishlist.module");
 const order_module_1 = require("./order/order.module");
 const notification_module_1 = require("./notification/notification.module");
+const offers_module_1 = require("./offers/offers.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -63,6 +64,7 @@ exports.AppModule = AppModule = __decorate([
             wishlist_module_1.WishlistModule,
             order_module_1.OrderModule,
             notification_module_1.NotificationModule,
+            offers_module_1.OffersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

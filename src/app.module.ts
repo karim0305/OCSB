@@ -10,6 +10,7 @@ import { CartModule } from './cart/cart.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { OrderModule } from './order/order.module';
 import { NotificationModule } from './notification/notification.module';
+import { OffersModule } from './offers/offers.module';
  
 
 @Module({
@@ -54,6 +55,7 @@ import { NotificationModule } from './notification/notification.module';
     WishlistModule,
     OrderModule,
     NotificationModule,
+    OffersModule,
 
   ],
   controllers: [AppController],
